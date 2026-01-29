@@ -1,0 +1,43 @@
+
+CREATE DATABASE VitrinClothingStore;
+GO
+
+USE VitrinClothingStore;
+GO
+
+CREATE TABLE Categories (
+    CategoryID INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE Products (
+    ProductID INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(150) NOT NULL,
+    Article NVARCHAR(50) NOT NULL UNIQUE,
+    Price DECIMAL(10,2) NOT NULL CHECK (Price > 0),
+    CategoryID INT NOT NULL,
+    Description NVARCHAR(MAX),
+    FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
+);
+
+CREATE TABLE Sizes (
+    SizeID INT IDENTITY(1,1) PRIMARY KEY,
+    SizeName NVARCHAR(10) NOT NULL UNIQUE
+);
+
+CREATE TABLE Colors (
+    ColorID INT IDENTITY(1,1) PRIMARY KEY,
+    ColorName NVARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE ProductVariants (
+    VariantID INT IDENTITY(1,1) PRIMARY KEY,
+    ProductID INT NOT NULL,
+    SizeID INT NOT NULL,
+    ColorID INT NOT NULL,
+    StockQuantity INT NOT NULL DEFAULT 0 CHECK (StockQuantity >= 0),
+    FOREIGN KEY (ProductID) REFERENCES Products(ProductID) ON DELETE CASCADE,
+    FOREIGN KEY (SizeID) REFERENCES Sizes(SizeID),
+    FOREIGN KEY (ColorID) REFERENCES Colors(ColorID),
+    UNIQUE (ProductID, SizeID, ColorID)
+);
